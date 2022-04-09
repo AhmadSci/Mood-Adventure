@@ -1,0 +1,128 @@
+{% extends "authentication/layout.html" %}
+{% block title %}Recommend{% endblock %}
+
+{% block style %}
+    .list-group {
+        flex-direction: row;
+    }
+{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div class="card-header">
+      Current Location
+    </div>
+    <div class="card-body">
+        <p class="card-text" id = 'longdis'>
+            Longitude: {{long}}<br>
+        </p>
+        <p class="card-text" id = "latdis">
+            Latitude: {{lat}}<br>
+        </p>
+        
+        <form action= "{%url 'location_async'%}" method="post">
+            {%csrf_token%}
+            <a href = '#'id = "demo" class="btn btn-primary" onclick="getLocation()">Get Location</a>
+            <button type="submit" class="btn btn-primary" id = "submit">Update Location</button>
+            <input type="hidden" name="lat" id="lat" value="">
+            <input type="hidden" name="long" id="long" value="">
+        </form>
+    </div>
+  </div>
+<div class="card">
+    <div class="card-header">
+      Get Recommendation
+    </div>
+    <div class="card-body mb-0">
+        <p class="card-text">
+            Mood
+        </p>
+        
+        <form action= "" method="post">
+            {%csrf_token%}
+            <div class="list-group rounded card-body mt-0">
+                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">
+                  Happy
+                </button>
+                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Sad</button>
+                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Bored</button>
+                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Mad</button>
+                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Curious</button>
+              </div>
+            <p class="card-text">
+                Transportation
+            </p>
+            <div class="list-group rounded card-body mt-0">
+                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">
+                  Walking
+                </button>
+                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Car</button>
+              </div>
+            <button type="submit" class="btn btn-primary" id = "submitrec">Get Recommendation</button>
+        </form>
+    </div>
+  </div>
+  <script>
+    var x = document.getElementById("demo");
+    const lat = document.getElementById("lat");
+    const long = document.getElementById("long");
+    const latdis = document.getElementById("latdis");
+    const longdis = document.getElementById("longdis");
+    function getLocation() {
+        
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+    
+    function showPosition(position) {
+      lat.value=position.coords.latitude ;
+      long.value =position.coords.longitude;
+    }
+
+    document.getElementById("submit").addEventListener("click", function(event){
+        event.preventDefault();
+        fetch ("{% url 'location_async' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'lat': lat.value,
+                'long': long.value
+            })
+        }).then(function(response){
+            return response.json();
+        }).then(function(data){
+            console.log(data);
+            if (data.status === 'success'){
+                latdis.innerHTML = "Latitude: " + lat.value;
+                longdis.innerHTML = "Longitude: " + long.value;
+                console.log('success :)');
+            }
+        });
+    });
+    {% comment %} document.getElementById('submitrec').addEventListener("click", function(event){
+        event.preventDefault();
+        que = document.getElementById('queryrec').value;
+        fetch ("{% url 'recommendations_async' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'query': que,
+            })
+        }).then(function(response){
+            return response.json();
+        }).then(function(data){
+            console.log(data);
+        });
+    }); {% endcomment %}
+    </script> 
+    
+{% endblock %}

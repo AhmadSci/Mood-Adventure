@@ -1,0 +1,84 @@
+{% extends "authentication/layout.html" %}
+
+        {% block title %}Nearby{% endblock %}
+        {% block script %}
+        <link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" rel="stylesheet">
+        <script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>
+        <style>
+            body { margin: 0; padding: 0; }
+            #map {
+                width: 100vw;
+                height: 70vh;
+            }
+        </style>
+        {% endblock %}
+        {% block body %}
+            <h1>Nearby Recommendations</h1>
+            {% if recommendations %}
+            <ul>
+            {% for rec in recommendations %}
+                <li>
+                {{ rec.description }}: {{rec.distance.m}}m ({{rec.location.x}}', '{{rec.location.y}})
+                </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+            <div id="map"></div>
+        
+            <script>
+                mapboxgl.accessToken = 'pk.eyJ1IjoiaGFtYWRhYWEiLCJhIjoiY2wxcDlwenRmMTh1azNibzNheG5oeWc4ZSJ9.pvYNBp4Vgp0TiG51e6X8uw';
+                
+                const map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/hamadaaa/cl1qc8i63000x15mtl58nf95u',
+                center: ['{{long}}', '{{lat}}'],
+                zoom: 15
+                });
+                // Create a marker and add it to the map.
+                new mapboxgl.Marker({ color: 'black' }).setLngLat(['{{long}}', '{{lat}}']).addTo(map);
+                {% for rec in recommendations %}
+                let coords{{rec.id}} = [];
+        
+                new mapboxgl.Marker().setLngLat(['{{rec.location.x}}', '{{rec.location.y}}']).addTo(map);
+        
+                fetch('https://api.mapbox.com/directions/v5/mapbox/driving/{{long}}%2C{{lat}}%3B{{rec.location.x}}%2C{{rec.location.y}}?alternatives=true&geometries=geojson&language=en&overview=simplified&steps=true&access_token=pk.eyJ1IjoiaGFtYWRhYWEiLCJhIjoiY2wxcDlwenRmMTh1azNibzNheG5oeWc4ZSJ9.pvYNBp4Vgp0TiG51e6X8uw')
+                .then(response => response.json())
+                .then(data =>{
+                    //add coords to array
+                    coords{{rec.id}}=[...data.routes[0].geometry.coordinates];
+                });
+        
+                console.log(coords{{rec.id}});
+                map.on('load', () => {
+                    map.addSource('route{{rec.id}}', {
+                    'type': 'geojson',
+                    'data': {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                    'type': 'LineString',
+                    'coordinates': coords{{rec.id}}
+                    }
+                    }
+                    });
+                    map.addLayer({
+                    'id': 'route{{rec.id}}',
+                    'type': 'line',
+                    'source': 'route{{rec.id}}',
+                    'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                    },
+                    'paint': {
+                    'line-color': '#ffc0cb',
+                    'line-width': 8
+                    }
+                    });
+                    });
+            {% endfor %}
+            map.addControl(new mapboxgl.NavigationControl());
+            //add map controlers to the map 
+        
+        
+            </script>
+        {% endblock %}
