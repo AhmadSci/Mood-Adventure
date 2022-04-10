@@ -35,7 +35,7 @@
                 zoom: 15
                 });
                 // Create a marker and add it to the map.
-                new mapboxgl.Marker({ color: 'black' }).setLngLat(['{{long}}', '{{lat}}']).addTo(map);
+                new mapboxgl.Marker({ color: '#CAC8C1' }).setLngLat(['{{long}}', '{{lat}}']).addTo(map);
                 {% for rec in recommendations %}
                 let coords{{rec.id}} = [];
         

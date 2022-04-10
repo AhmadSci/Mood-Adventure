@@ -1,4 +1,5 @@
 import json
+from operator import contains
 import requests
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
@@ -34,45 +35,74 @@ def update_location(request):
             request.user.save()
             return JsonResponse({'status': 'success'})
 
+def process_recommendation(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            recommendation = "places to visit while being "
+            body_unicode = request.body.decode('utf-8')
+            body = json.loads(body_unicode)
+
+            mood = body['mood']
+
+            if "happy" in mood.lower():
+                recommendation += "happy"
+            if "sad" in mood.lower():
+                recommendation += "sad"
+            if "curious" in mood.lower():
+                recommendation += "curious"
+            if "bored" in mood.lower():
+                recommendation += "bored"
+            if "mad" in mood.lower():
+                recommendation += "mad"
+
+            if "walking" in mood.lower():
+                recommendation += " near me"
+            if "car" in mood.lower():
+                recommendation += " in my city"
+
+            return JsonResponse({'status': recommendation})
+
+            
+
 
 # api_key = 'API_KEY'
 # def get_recommendations(request):
-#     url = "https://maps.googleapis.com/maps/api/place/details/json?"
-#     if request.method == 'POST':
-#         body_unicode = request.body.decode('utf-8')
-#         body = json.loads(body_unicode)
-#         query = body['query']
-#         placeid = recommend(query,request.user.location.x,request.user.location.y)
+#      url = "https://maps.googleapis.com/maps/api/place/details/json?"
+#      if request.method == 'POST':
+#          body_unicode = request.body.decode('utf-8')
+#          body = json.loads(body_unicode)
+#          query = body['query']
+#          placeid = recommend(query,request.user.location.x,request.user.location.y)
 
-#     # r = requests.get(url + 'place_id=' + placeid + '&key=' + api_key)
+#      # r = requests.get(url + 'place_id=' + placeid + '&key=' + api_key)
 
-#     # x = r.json()
+#      # x = r.json()
     
-#     # y = x.result.geometry.location
-#     # Recommendation.objects.create(id=placeid, description=query, location=Point(y.lng,y.lat))
-#     # rec = Recommendation.objects.filter(id=placeid)
-#     # request.user.recommendations.add(rec)
-#     # request.user.save()
-#     return (placeid)
+#      # y = x.result.geometry.location
+#      # Recommendation.objects.create(id=placeid, description=query, location=Point(y.lng,y.lat))
+#      # rec = Recommendation.objects.filter(id=placeid)
+#      # request.user.recommendations.add(rec)
+#      # request.user.save()
+#      return (placeid)
 
 # def recommend(query,x,y):
-#     url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
-#     location = str(y)+'%2C'+str(x)
+#      url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+#      location = str(y)+'%2C'+str(x)
     
-#     # get method of requests module
-#     # return response object
-#     r = requests.get(url + 'location=' + location + '&query=' + query + '&key=' + api_key)
+#      # get method of requests module
+#      # return response object
+#      r = requests.get(url + 'location=' + location + '&query=' + query + '&key=' + api_key)
     
-#     # json method of response object convert
-#     #  json format data into python format data
-#     res = r.json()
-#     print (res)
+#      # json method of response object convert
+#      #  json format data into python format data
+#      res = r.json()
+#      print (res)
 
     
-#     # now x contains list of nested dictionaries
-#     # we know dictionary contain key value pair
-#     # store the value of result key in variable y
-#     ress = res['results']
+#      # now x contains list of nested dictionaries
+#      # we know dictionary contain key value pair
+#      # store the value of result key in variable y
+#      ress = res['results']
     
-#     # keep looping upto length of y
-#     return ress
+#      # keep looping upto length of y
+#      return ress

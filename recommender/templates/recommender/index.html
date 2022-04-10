@@ -41,21 +41,17 @@
         <form action= "" method="post">
             {%csrf_token%}
             <div class="list-group rounded card-body mt-0">
-                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">
-                  Happy
-                </button>
-                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Sad</button>
-                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Bored</button>
-                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Mad</button>
-                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Curious</button>
+                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Happy </button>
+                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Sad </button>
+                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Bored </button>
+                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Mad </button>
+                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Curious </button>
               </div>
             <p class="card-text">
                 Transportation
             </p>
             <div class="list-group rounded card-body mt-0">
-                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">
-                  Walking
-                </button>
+                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Walking</button>
                 <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Car</button>
               </div>
             <button type="submit" class="btn btn-primary" id = "submitrec">Get Recommendation</button>
@@ -123,6 +119,32 @@
             console.log(data);
         });
     }); {% endcomment %}
+    document.getElementById('submitrec').addEventListener("click", function(event){
+        event.preventDefault();
+        que = document.getElementsByClassName('list-group-item');
+        inner = "";
+
+        for (var i = 0; i < que.length; i++) {
+            if (que[i].classList.contains('active')) {
+                inner += que[i].innerHTML;
+            }
+        }
+        fetch ("{% url 'process_recommend_async' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'mood': inner,
+            })
+        }).then(function(response){
+            return response.json();
+        }).then(function(data){
+            console.log(data);
+        });
+        });
+    
     </script> 
     
 {% endblock %}
