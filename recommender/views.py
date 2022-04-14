@@ -10,6 +10,10 @@ from django.contrib.gis.geos import Point
 
 from authentication.models import Recommendation
 
+from selenium import webdriver
+from parsel import Selector
+import random
+
 # Create your views here.
 
 
@@ -65,44 +69,51 @@ def process_recommendation(request):
             
 
 
-# api_key = 'API_KEY'
-# def get_recommendations(request):
-#      url = "https://maps.googleapis.com/maps/api/place/details/json?"
-#      if request.method == 'POST':
-#          body_unicode = request.body.decode('utf-8')
-#          body = json.loads(body_unicode)
-#          query = body['query']
-#          placeid = recommend(query,request.user.location.x,request.user.location.y)
+def get_recommendations(request):
+    x = request.user.location.x
+    y = request.user.location.y
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        query = body['query']
+        url = f"https://www.google.com/maps/search/{query}/@{y},{x}"
+        chromedrive_path = './chromedriver.exe'
+        options = webdriver.ChromeOptions()
 
-#      # r = requests.get(url + 'place_id=' + placeid + '&key=' + api_key)
+        options.add_argument('headless')
+        browser = webdriver.Chrome(chromedrive_path,options=options)
+        browser.get(url)
 
-#      # x = r.json()
-    
-#      # y = x.result.geometry.location
-#      # Recommendation.objects.create(id=placeid, description=query, location=Point(y.lng,y.lat))
-#      # rec = Recommendation.objects.filter(id=placeid)
-#      # request.user.recommendations.add(rec)
-#      # request.user.save()
-#      return (placeid)
+        page_content = browser.page_source
+        response = Selector(page_content)
 
-# def recommend(query,x,y):
-#      url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
-#      location = str(y)+'%2C'+str(x)
-    
-#      # get method of requests module
-#      # return response object
-#      r = requests.get(url + 'location=' + location + '&query=' + query + '&key=' + api_key)
-    
-#      # json method of response object convert
-#      #  json format data into python format data
-#      res = r.json()
-#      print (res)
+        num = random.randrange(3, 10, 2)
+        print(num)
+        link = ""
+        name = ""
 
-    
-#      # now x contains list of nested dictionaries
-#      # we know dictionary contain key value pair
-#      # store the value of result key in variable y
-#      ress = res['results']
-    
-#      # keep looping upto length of y
-#      return ress
+        for el in response.xpath(f'//*[@id="pane"]/div/div[1]/div/div/div[2]/div[1]/div[{num}]/div/a'):
+            link += el.xpath('./@href').extract_first('')+"&hl=en"
+            name += el.xpath('./@aria-label').extract_first('')
+        print(request.user.location.x)
+        print(request.user.location.y)
+
+        print(link)
+        long = link[link.index("!3d")+len("123"):link.index("!4d")]
+        lat = link[link.index("!4d")+len("123"):link.index("?auth")]
+        print(float(long))
+        print(float(lat))
+        browser.quit()
+
+        # make a point with long ad lat and add to to user's recommendation list 
+        point = Point(float(lat), float(long))
+        print(point)
+        recommendation = Recommendation(location=point, description=name, link=link)
+        recommendation.save()
+        # remove all recommendations from user's list
+        request.user.recommendations.clear()
+        # add new recommendation to user's list
+        request.user.recommendations.add(recommendation)
+        request.user.save()
+
+    return JsonResponse({'url': url, "name": name})

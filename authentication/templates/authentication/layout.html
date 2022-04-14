@@ -5,10 +5,9 @@
     <head>
         <title>Recommender - {% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <link href="{% static 'network/styles.css' %}" rel="stylesheet">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <meta content='maximum-scale=1.0, initial-scale=1.0, width=device-width' name='viewport'>
-        <link rel="shortcut icon" type="image/jpg" href="{% static 'network/logo.png' %}"/>
+        <link rel="shortcut icon" type="image/jpg" href="{% static 'authentication/smol.png' %}"/>
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;600;700&display=swap');
         
@@ -37,15 +36,15 @@
     </head>
     <body>
 
-        <nav class="navbar navbar-expand-lg navbar-light">
+        <nav class="navbar navbar-expand-lg navbar-light m-2">
             
-            <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'authentication/logo.png' %}" alt="logo" class="navbar-brand" width = "70px"></a>
+            <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'authentication/smol.png' %}" alt="logo" class="navbar-brand" width = "70px"></a>
           
             <div>
-              <ul class="navbar-nav mr-auto">
+              <ul class="navbar-nav mt-3">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <p class= 'text-capitalize'><strong>{{ user.username }}</strong></p>
+                        <p class= 'text-capitalize nav-link'><strong>{{ user.username }}</strong></p>
                     </li>
                 {% endif %}
                 {% if user.is_authenticated %}

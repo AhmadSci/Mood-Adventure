@@ -7,23 +7,24 @@
         <style>
             body { margin: 0; padding: 0; }
             #map {
-                width: 100vw;
-                height: 70vh;
+                width: 97vw;
+                height: 65vh;
             }
         </style>
         {% endblock %}
         {% block body %}
-            <h1>Nearby Recommendations</h1>
-            {% if recommendations %}
-            <ul>
-            {% for rec in recommendations %}
-                <li>
-                {{ rec.description }}: {{rec.distance.m}}m ({{rec.location.x}}', '{{rec.location.y}})
-                </li>
-            {% endfor %}
-            </ul>
-            {% endif %}
-            <div id="map"></div>
+            <div class="card m-3">
+                <div class="card-body">
+                <h5 class="card-title">Nearby Recommendations</h5>
+                {% if recommendations %}
+                {% for rec in recommendations %}
+                    <p class="card-text"><a href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
+                    <p class="card-text"><small class="text-muted">{{rec.distance.m}}m</small></p>
+                {% endfor %}
+                {% endif %}
+                </div>
+                <div class="card-img-bottom" id="map" ><div>
+            </div>
         
             <script>
                 mapboxgl.accessToken = 'pk.eyJ1IjoiaGFtYWRhYWEiLCJhIjoiY2wxcDlwenRmMTh1azNibzNheG5oeWc4ZSJ9.pvYNBp4Vgp0TiG51e6X8uw';

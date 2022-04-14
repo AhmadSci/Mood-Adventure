@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block body %}
-<div class="card">
+<div class="card m-3">
     <div class="card-header">
       Current Location
     </div>
@@ -29,7 +29,7 @@
         </form>
     </div>
   </div>
-<div class="card">
+<div class="card mt-4 m-3">
     <div class="card-header">
       Get Recommendation
     </div>
@@ -58,6 +58,7 @@
         </form>
     </div>
   </div>
+  <div class="card mt-4 m-3" id="result"></div>
   <script>
     var x = document.getElementById("demo");
     const lat = document.getElementById("lat");
@@ -101,24 +102,6 @@
             }
         });
     });
-    {% comment %} document.getElementById('submitrec').addEventListener("click", function(event){
-        event.preventDefault();
-        que = document.getElementById('queryrec').value;
-        fetch ("{% url 'recommendations_async' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({
-                'query': que,
-            })
-        }).then(function(response){
-            return response.json();
-        }).then(function(data){
-            console.log(data);
-        });
-    }); {% endcomment %}
     document.getElementById('submitrec').addEventListener("click", function(event){
         event.preventDefault();
         que = document.getElementsByClassName('list-group-item');
@@ -142,6 +125,40 @@
             return response.json();
         }).then(function(data){
             console.log(data);
+            que = data.status;
+            document.getElementById('result').innerHTML = "Please wait...";
+            fetch ("{% url 'recommendations_async' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    'query': que,
+                })
+            }).then(function(response){
+                return response.json();
+            }).then(function(data){
+                console.log(data.url);
+                // create a div with the fetched data and append it to the div with id="result"
+                var div = document.createElement('div');
+                div.className = 'card-header';
+                div.innerHTML = 'Result';
+                document.getElementById('result').innerHTML = "";
+                document.getElementById('result').appendChild(div);
+                var div2 = document.createElement('div');
+                div2.className = 'card-body';
+                var h5 = document.createElement('h5');
+                h5.className = 'card-title';
+                h5.innerHTML = data.name;
+                var a = document.createElement('a');
+                a.className = 'btn btn-primary';
+                a.href = "{% url 'mapper:index' %}";
+                a.innerHTML = 'Go to map';
+                div2.appendChild(h5);
+                div2.appendChild(a);
+                document.getElementById('result').appendChild(div2);
+            });
         });
         });
     
