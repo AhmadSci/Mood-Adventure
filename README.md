@@ -7,8 +7,8 @@ A Django Web application that recommends a mini adventure based on your current 
 # Installation
 
 1- Download these programs 
-- [docker](https://www.docker.com/products/docker-desktop/)
 - [osgeo4w](https://trac.osgeo.org/osgeo4w/)
+- [docker](https://www.docker.com/products/docker-desktop/)
 - [wsl_update_x64](https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi)
 
 2- Create the database
