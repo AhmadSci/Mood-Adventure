@@ -20,6 +20,12 @@ docker run --name=postgis -d -e POSTGRES_USER=user001 -e POSTGRES_PASS=123456789
 ```bash
 source env\Scripts\activate
 ```
+OR
+Create a virtual environment
+```bash
+python -m venv env
+```
+
 4- Install the requirements
 
 ```bash
