@@ -15,12 +15,14 @@
         {% block body %}
             <div class="card m-3">
                 <div class="card-body">
-                <h5 class="card-title">Nearby Recommendations</h5>
+                <h5 class="card-title">Latest Recommendation</h5>
                 {% if recommendations %}
                 {% for rec in recommendations %}
                     <p class="card-text"><a href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
-                    <p class="card-text"><small class="text-muted">{{rec.distance.m}}m</small></p>
+                    <p class="card-text"><small class="text-muted">{{rec.distance.m}}m away from you</small></p>
                 {% endfor %}
+                {% else %}
+                <p class="card-text">No recommendations found</p>
                 {% endif %}
                 </div>
                 <div class="card-img-bottom" id="map" ><div>
@@ -37,6 +39,62 @@
                 });
                 // Create a marker and add it to the map.
                 new mapboxgl.Marker({ color: '#CAC8C1' }).setLngLat(['{{long}}', '{{lat}}']).addTo(map);
+                mapboxgl.setRTLTextPlugin(
+                    'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+                    null,
+                    true // Lazy load the plugin
+                    );
+
+                    map.on('load', () => {
+                        map.loadImage(
+                            'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
+                            (error, image) => {
+                                if (error) throw error;
+                                map.addImage('custom-marker', image);
+                                map.addSource('points', {
+                                    'type': 'geojson',
+                                    'data': {
+                                        'type': 'FeatureCollection',
+                                        'features': [
+                                    {% for rec in recommendations %}
+                                    {
+                                    // feature for Mapbox DC
+                                    'type': 'Feature',
+                                    'geometry': {
+                                    'type': 'Point',
+                                    'coordinates': ['{{rec.location.x}}', '{{rec.location.y}}']
+                                    },
+                                    'properties': {
+                                    'title': '{{rec.description}}',
+                                    }
+                                    },
+                                    {% endfor %}
+                                ]
+                                }
+                                });
+                                map.addLayer({
+                                    'id': 'points',
+                                    'type': 'symbol',
+                                    'source': 'points',
+                                    'layout': {
+                                    // get the title name from the source's "title" property
+                                    'text-field': ['get', 'title'],
+                                    'text-font': [
+                                    'Open Sans Semibold',
+                                    'Arial Unicode MS Bold'
+                                    ],
+                                    'text-offset': [0, 0.25],
+                                    'text-anchor': 'top'
+                                    },
+                                    "paint": {
+                                        "text-color": "white",
+                                        "text-halo-color": "#202124",
+                                        "text-halo-width": 2
+                                    }
+                                    });
+                            });
+                        });
+
                 {% for rec in recommendations %}
                 let coords{{rec.id}} = [];
         

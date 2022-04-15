@@ -12,4 +12,5 @@ urlpatterns = [
     path('recommender/', include('recommender.urls')),
     path('mapper/', include('mapper.urls')),
     path('', include('authentication.urls')),
+    path('profile/', include('userprofile.urls')),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

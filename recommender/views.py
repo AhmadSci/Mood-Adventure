@@ -24,21 +24,6 @@ def index(request):
     lat = request.user.location.y
     return render(request, 'recommender/index.html',context= {'long': long, 'lat': lat})
 
-def update_location(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            body_unicode = request.body.decode('utf-8')
-            body = json.loads(body_unicode)
-
-            long = body['long']
-            lat = body['lat']
-
-            point = Point(float(long), float(lat))
-            #update users location in database 
-            request.user.location = point
-            request.user.save()
-            return JsonResponse({'status': 'success'})
-
 def process_recommendation(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -97,7 +82,7 @@ def get_recommendations(request):
             name += el.xpath('./@aria-label').extract_first('')
         print(request.user.location.x)
         print(request.user.location.y)
-
+        print(url)
         print(link)
         long = link[link.index("!3d")+len("123"):link.index("!4d")]
         lat = link[link.index("!4d")+len("123"):link.index("?auth")]
@@ -110,6 +95,8 @@ def get_recommendations(request):
         print(point)
         recommendation = Recommendation(location=point, description=name, link=link)
         recommendation.save()
+        # add recommendation to user's list of previous recommendations
+        request.user.old_recommendations.add(recommendation)
         # remove all recommendations from user's list
         request.user.recommendations.clear()
         # add new recommendation to user's list

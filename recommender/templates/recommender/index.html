@@ -19,14 +19,6 @@
         <p class="card-text" id = "latdis">
             Latitude: {{lat}}<br>
         </p>
-        
-        <form action= "{%url 'location_async'%}" method="post">
-            {%csrf_token%}
-            <a href = '#'id = "demo" class="btn btn-primary" onclick="getLocation()">Get Location</a>
-            <button type="submit" class="btn btn-primary" id = "submit">Update Location</button>
-            <input type="hidden" name="lat" id="lat" value="">
-            <input type="hidden" name="long" id="long" value="">
-        </form>
     </div>
   </div>
 <div class="card mt-4 m-3">
@@ -60,48 +52,6 @@
   </div>
   <div class="card mt-4 m-3" id="result"></div>
   <script>
-    var x = document.getElementById("demo");
-    const lat = document.getElementById("lat");
-    const long = document.getElementById("long");
-    const latdis = document.getElementById("latdis");
-    const longdis = document.getElementById("longdis");
-    function getLocation() {
-        
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-      } else {
-        x.innerHTML = "Geolocation is not supported by this browser.";
-      }
-    }
-    
-    function showPosition(position) {
-      lat.value=position.coords.latitude ;
-      long.value =position.coords.longitude;
-    }
-
-    document.getElementById("submit").addEventListener("click", function(event){
-        event.preventDefault();
-        fetch ("{% url 'location_async' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({
-                'lat': lat.value,
-                'long': long.value
-            })
-        }).then(function(response){
-            return response.json();
-        }).then(function(data){
-            console.log(data);
-            if (data.status === 'success'){
-                latdis.innerHTML = "Latitude: " + lat.value;
-                longdis.innerHTML = "Longitude: " + long.value;
-                console.log('success :)');
-            }
-        });
-    });
     document.getElementById('submitrec').addEventListener("click", function(event){
         event.preventDefault();
         que = document.getElementsByClassName('list-group-item');

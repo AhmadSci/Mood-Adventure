@@ -7,6 +7,7 @@ from django.contrib.gis.geos import Point
 class User(AbstractUser):
     recommendations = models.ManyToManyField('Recommendation', blank=True)
     location = gis_models.PointField(default=Point(0.0, 0.0))
+    old_recommendations = models.ManyToManyField('Recommendation', blank=True, related_name='old_recommendations')
 
 class Recommendation(gis_models.Model):
     id = gis_models.BigAutoField(primary_key=True)

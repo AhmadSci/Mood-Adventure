@@ -1,0 +1,112 @@
+{% extends "authentication/layout.html" %}
+
+{% block title %}{{user.username}}'s Profile{% endblock %}
+
+{% block body %}
+<div class="card m-3">
+    <div class="card-header">
+      Current Location
+    </div>
+    <div class="card-body">
+        <p class="card-text" id = 'longdis'>
+            Longitude: {{long}}<br>
+        </p>
+        <p class="card-text" id = "latdis">
+            Latitude: {{lat}}<br>
+        </p>
+        
+        <form action= "" method="post">
+            {%csrf_token%}
+            <a href = '#'id = "demo" class="btn btn-primary" onclick="getLocation()">Get Location</a>
+            <button type="submit" class="btn btn-primary" id = "submit">Update Location</button>
+            <input type="hidden" name="lat" id="lat" value="">
+            <input type="hidden" name="long" id="long" value="">
+        </form>
+    </div>
+  </div>
+  <div class="card m-3">
+    <div class="card-body">
+    <h5 class="card-title">Previous Recommendations</h5>
+    {% if recommendations %}
+    {% for rec in recommendations %}
+    <div class = "mt-2">
+        <button type="button" class="btn btn-dark float-right" name = {{rec.id}} id = "delbtn{{rec.id}}">Delete</button>
+        <p class="card-text"><a href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
+        <p class="card-text"><small class="text-muted">{{rec.distance.m}}m away from you</small></p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    </div>
+</div>
+  <script>
+    var x = document.getElementById("demo");
+    const lat = document.getElementById("lat");
+    const long = document.getElementById("long");
+    const latdis = document.getElementById("latdis");
+    const longdis = document.getElementById("longdis");
+    function getLocation() {
+        
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+    
+    function showPosition(position) {
+      lat.value=position.coords.latitude ;
+      long.value =position.coords.longitude;
+    }
+
+    document.getElementById("submit").addEventListener("click", function(event){
+        event.preventDefault();
+        fetch ("{% url 'profile:location_async' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'lat': lat.value,
+                'long': long.value
+            })
+        }).then(function(response){
+            return response.json();
+        }).then(function(data){
+            console.log(data);
+            if (data.status === 'success'){
+                latdis.innerHTML = "Latitude: " + lat.value;
+                longdis.innerHTML = "Longitude: " + long.value;
+                console.log('success :)');
+            }
+        });
+    });
+
+    {% if recommendations %}
+    {% for rec in recommendations %}
+    let delbtn{{rec.id}} = document.getElementById("delbtn{{rec.id}}");
+    delbtn{{rec.id}}.addEventListener("click", function(event){
+        event.preventDefault();
+        fetch ("{% url 'profile:delete_recommendation' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'pk': '{{rec.id}}'
+            })
+        }).then(function(response){
+            return response.json();
+        }).then(function(data){
+            console.log(data);
+            if (data.status === 'success'){
+                console.log('success :)');
+                delbtn{{rec.id}}.parentNode.remove();
+            }
+        });
+    });
+    {% endfor %}
+    {% endif %}
+  </script>
+{% endblock %}
