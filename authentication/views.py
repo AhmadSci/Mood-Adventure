@@ -6,7 +6,6 @@ from django.shortcuts import render
 from django.urls import reverse
 from .models import User
 
-# Create your views here.
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -53,9 +52,16 @@ def register(request):
             user = User.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
+        # hadeling if a user already exists
             return render(request, "authentication/register.html", {
                 "message": "Username already taken."
             })
+        except ValueError:
+        # handling if the user didnt fill in all the fields
+            return render(request, "authentication/register.html", {
+                "message": "Please fill all required fields."
+            })
+
         login(request, user)
         return redirect('recommender/')
     else:

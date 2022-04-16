@@ -1,14 +1,9 @@
 {% extends "authentication/layout.html" %}
 {% block title %}Recommend{% endblock %}
 
-{% block style %}
-    .list-group {
-        flex-direction: row;
-    }
-{% endblock %}
 
 {% block body %}
-<div class="card m-3">
+<div class="card m-5 location-div">
     <div class="card-header">
       Current Location
     </div>
@@ -19,9 +14,12 @@
         <p class="card-text" id = "latdis">
             Latitude: {{lat}}<br>
         </p>
+        {%if long == 0 %}
+            <a href="{% url 'profile:index' %}" class="btn btn-primary">Set Location</a>
+        {%endif%}
     </div>
   </div>
-<div class="card mt-4 m-3">
+<div class="card mt-4 m-3 location-div">
     <div class="card-header">
       Get Recommendation
     </div>
@@ -50,7 +48,7 @@
         </form>
     </div>
   </div>
-  <div class="card mt-4 m-3" id="result"></div>
+  <div class="card mt-4 m-3 location-div" id="result"></div>
   <script>
     document.getElementById('submitrec').addEventListener("click", function(event){
         event.preventDefault();

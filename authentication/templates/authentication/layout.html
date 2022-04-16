@@ -9,44 +9,30 @@
         <meta content='maximum-scale=1.0, initial-scale=1.0, width=device-width' name='viewport'>
         <link rel="shortcut icon" type="image/jpg" href="{% static 'authentication/smol.png' %}"/>
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;600;700&display=swap');
-        
-            * {
-                font-family: 'Red Hat Display', sans-serif !important;
-            }
-            a{
-                color:inherit;
-                text-decoration:none;
-            }
-            a:hover{
-                color:inherit;
-                opacity:0.7;
-                text-decoration:none;
-                pointer-events: pointer;
-            }
         {% block style %}
         {% endblock %}
         </style>
         
         <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+        <link href="{% static 'authentication/style.css' %}" rel="stylesheet">
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         {% block script %}
         {% endblock %}
     </head>
     <body>
+        <div id = "nav">
 
-        <nav class="navbar navbar-expand-lg navbar-light m-2">
-            
+        
+        <nav class="navbar navbar-expand-lg navbar-light m-2 shadow-lg rounded" id = "navbar">
+            <div id = "nav-logo">
             <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'authentication/smol.png' %}" alt="logo" class="navbar-brand" width = "70px"></a>
+            <h3>Mood</h3>
+            </div>
           
             <div>
               <ul class="navbar-nav mt-3">
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <p class= 'text-capitalize nav-link'><a href="{% url 'profile:index' %}"><strong>{{ user.username }}</strong></a></p>
-                    </li>
-                {% endif %}
+                
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'mapper:index' %}">Map</a>
@@ -65,10 +51,17 @@
                         <a class="nav-link" href="{% url 'register' %}">Register</a>
                     </li>
                 {% endif %}
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <p class= 'text-capitalize nav-link'><a class = "btn btn-dark" href="{% url 'profile:index' %}"><i class="ri-user-line btn m-0" style = "color:white; padding:0 0 3px 0"></i>&nbsp<strong style = "padding-right:5px">{{ user.username }}</strong></a></p>
+                    </li>
+                {% endif %}
               </ul>
             </div>
           </nav>
-          <hr>
+
+        </div>
+
         
         <div class="body">
             {% block body %}

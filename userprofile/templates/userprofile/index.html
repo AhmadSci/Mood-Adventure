@@ -3,7 +3,7 @@
 {% block title %}{{user.username}}'s Profile{% endblock %}
 
 {% block body %}
-<div class="card m-3">
+<div class="card m-5 location-div">
     <div class="card-header">
       Current Location
     </div>
@@ -24,26 +24,30 @@
         </form>
     </div>
   </div>
-  <div class="card m-3">
+  <div class="card m-3 location-div">
     <div class="card-body">
-    <h5 class="card-title">Previous Recommendations</h5>
-    {% if recommendations %}
-    {% for rec in recommendations %}
-    <div class = "mt-2">
-        <button type="button" class="btn btn-dark float-right" name = {{rec.id}} id = "delbtn{{rec.id}}">Delete</button>
-        <p class="card-text"><a href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
-        <p class="card-text"><small class="text-muted">{{rec.distance.m}}m away from you</small></p>
-    </div>
-    {% endfor %}
-    {% endif %}
+        <h5 class="card-title">Previous Recommendations</h5>
+        {% if recommendations %}
+            {% for rec in recommendations %}
+                <div class = "mt-2">
+                    <button type="button" class="btn btn-dark float-right" name = {{rec.id}} id = "delbtn{{rec.id}}">Delete</button>
+                    <p class="card-text"><a href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
+                    <p class="card-text"><small class="text-muted">{{rec.distance.m}}m away from you</small></p>
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 </div>
   <script>
+
+    // getting all the elements needed
     var x = document.getElementById("demo");
     const lat = document.getElementById("lat");
     const long = document.getElementById("long");
     const latdis = document.getElementById("latdis");
     const longdis = document.getElementById("longdis");
+
+    // get the location of the user
     function getLocation() {
         
       if (navigator.geolocation) {
@@ -53,13 +57,19 @@
       }
     }
     
+    // setting the location of the user as the value of hidden inputs in the form
     function showPosition(position) {
       lat.value=position.coords.latitude ;
       long.value =position.coords.longitude;
     }
 
+    // on submit, send the location to the server
     document.getElementById("submit").addEventListener("click", function(event){
+
+        // prevent page refresh on form submit
         event.preventDefault();
+
+        // contacting the server and sending the new location of the user
         fetch ("{% url 'profile:location_async' %}", {
             method: 'POST',
             headers: {
@@ -73,7 +83,9 @@
         }).then(function(response){
             return response.json();
         }).then(function(data){
-            console.log(data);
+            //console.log(data);
+
+            // if the location is updated, show the new location on the page
             if (data.status === 'success'){
                 latdis.innerHTML = "Latitude: " + lat.value;
                 longdis.innerHTML = "Longitude: " + long.value;
@@ -82,31 +94,45 @@
         });
     });
 
+    // check if the user has any recommendations
     {% if recommendations %}
-    {% for rec in recommendations %}
-    let delbtn{{rec.id}} = document.getElementById("delbtn{{rec.id}}");
-    delbtn{{rec.id}}.addEventListener("click", function(event){
-        event.preventDefault();
-        fetch ("{% url 'profile:delete_recommendation' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({
-                'pk': '{{rec.id}}'
-            })
-        }).then(function(response){
-            return response.json();
-        }).then(function(data){
-            console.log(data);
-            if (data.status === 'success'){
-                console.log('success :)');
-                delbtn{{rec.id}}.parentNode.remove();
-            }
-        });
-    });
-    {% endfor %}
+
+        // if the user has recommendations, add event listeners to the delete buttons
+        {% for rec in recommendations %}
+
+            let delbtn{{rec.id}} = document.getElementById("delbtn{{rec.id}}");
+
+            delbtn{{rec.id}}.addEventListener("click", function(event){
+
+                // prevent form from submitting
+                event.preventDefault();
+
+                // deleting the specific recommendation from the database
+                fetch ("{% url 'profile:delete_recommendation' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        'pk': '{{rec.id}}'
+                    })
+                })
+
+                .then(function(response){
+                    return response.json();
+                })
+                
+                .then(function(data){
+                    console.log(data);
+                    if (data.status === 'success'){
+                        // if the recommendation is deleted, remove the recommendation from the page
+                        console.log('success :)');
+                        delbtn{{rec.id}}.parentNode.remove();
+                    }
+                });
+            });
+        {% endfor %}
     {% endif %}
   </script>
 {% endblock %}

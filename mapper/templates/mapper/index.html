@@ -1,143 +1,164 @@
 {% extends "authentication/layout.html" %}
 
-        {% block title %}Nearby{% endblock %}
-        {% block script %}
-        <link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" rel="stylesheet">
-        <script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>
-        <style>
-            body { margin: 0; padding: 0; }
-            #map {
-                width: 97vw;
-                height: 65vh;
-            }
-        </style>
-        {% endblock %}
-        {% block body %}
-            <div class="card m-3">
-                <div class="card-body">
-                <h5 class="card-title">Latest Recommendation</h5>
-                {% if recommendations %}
-                {% for rec in recommendations %}
-                    <p class="card-text"><a href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
-                    <p class="card-text"><small class="text-muted">{{rec.distance.m}}m away from you</small></p>
-                {% endfor %}
-                {% else %}
-                <p class="card-text">No recommendations found</p>
-                {% endif %}
-                </div>
-                <div class="card-img-bottom" id="map" ><div>
-            </div>
-        
-            <script>
-                mapboxgl.accessToken = 'pk.eyJ1IjoiaGFtYWRhYWEiLCJhIjoiY2wxcDlwenRmMTh1azNibzNheG5oeWc4ZSJ9.pvYNBp4Vgp0TiG51e6X8uw';
-                
-                const map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/hamadaaa/cl1qc8i63000x15mtl58nf95u',
-                center: ['{{long}}', '{{lat}}'],
-                zoom: 15
-                });
-                // Create a marker and add it to the map.
-                new mapboxgl.Marker({ color: '#CAC8C1' }).setLngLat(['{{long}}', '{{lat}}']).addTo(map);
-                mapboxgl.setRTLTextPlugin(
-                    'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
-                    null,
-                    true // Lazy load the plugin
-                    );
+{% block title %}Nearby{% endblock %}
 
-                    map.on('load', () => {
-                        map.loadImage(
-                            'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
-                            (error, image) => {
-                                if (error) throw error;
-                                map.addImage('custom-marker', image);
-                                map.addSource('points', {
-                                    'type': 'geojson',
-                                    'data': {
-                                        'type': 'FeatureCollection',
-                                        'features': [
-                                    {% for rec in recommendations %}
-                                    {
-                                    // feature for Mapbox DC
-                                    'type': 'Feature',
-                                    'geometry': {
+{% block script %}
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="card mt-5 location-div">
+        <div class="card-body">
+
+        <h5 class="card-title">Latest Recommendation</h5>
+
+        {% if recommendations %}
+            {% for rec in recommendations %}
+                <p class="card-text"><a class = "link" href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
+                <p class="card-text"><small class="text-muted">{{rec.distance.m}}m away from you</small></p>
+            {% endfor %}
+        {% else %}
+            <p class="card-text">No recommendations found</p>
+        {% endif %}
+        </div>
+
+        <div class="card-img-bottom" id="map" ><div>
+
+    </div>
+
+    <script>
+        // mapbox token
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaGFtYWRhYWEiLCJhIjoiY2wxcDlwenRmMTh1azNibzNheG5oeWc4ZSJ9.pvYNBp4Vgp0TiG51e6X8uw';
+        
+        // creating a new map with the user's location as its center
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/hamadaaa/cl1qc8i63000x15mtl58nf95u',
+            center: ['{{long}}', '{{lat}}'],
+            zoom: 13
+        });
+
+        // Create a marker to represent the user and add it to the map.
+        new mapboxgl.Marker({ color: '#CAC8C1' }).setLngLat(['{{long}}', '{{lat}}']).addTo(map);
+
+        // add arabic language support to the map
+        mapboxgl.setRTLTextPlugin(
+            'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+            null,
+            true 
+        );
+
+            // on map load display the name of the recommendation
+        map.on('load', () => {
+
+            // custom marker
+            map.loadImage(
+                'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
+                (error, image) => {
+                    if (error) throw error;
+                    map.addImage('custom-marker', image);
+
+                    // setting the name of the recommendation
+                    map.addSource('points', {
+                        'type': 'geojson',
+                        'data': {
+                            'type': 'FeatureCollection',
+                            'features': [
+                            {% for rec in recommendations %} // incase of having multiple recommendations
+                                {
+                                'type': 'Feature',
+                                'geometry': {
                                     'type': 'Point',
                                     'coordinates': ['{{rec.location.x}}', '{{rec.location.y}}']
-                                    },
-                                    'properties': {
+                                },
+                                'properties': {
                                     'title': '{{rec.description}}',
-                                    }
-                                    },
-                                    {% endfor %}
-                                ]
                                 }
-                                });
-                                map.addLayer({
-                                    'id': 'points',
-                                    'type': 'symbol',
-                                    'source': 'points',
-                                    'layout': {
-                                    // get the title name from the source's "title" property
-                                    'text-field': ['get', 'title'],
-                                    'text-font': [
-                                    'Open Sans Semibold',
-                                    'Arial Unicode MS Bold'
-                                    ],
-                                    'text-offset': [0, 0.25],
-                                    'text-anchor': 'top'
-                                    },
-                                    "paint": {
-                                        "text-color": "white",
-                                        "text-halo-color": "#202124",
-                                        "text-halo-width": 2
-                                    }
-                                    });
-                            });
-                        });
+                                },
+                            {% endfor %}
+                            ]
+                        }
+                    });
 
-                {% for rec in recommendations %}
-                let coords{{rec.id}} = [];
-        
-                new mapboxgl.Marker().setLngLat(['{{rec.location.x}}', '{{rec.location.y}}']).addTo(map);
-        
-                fetch('https://api.mapbox.com/directions/v5/mapbox/driving/{{long}}%2C{{lat}}%3B{{rec.location.x}}%2C{{rec.location.y}}?alternatives=true&geometries=geojson&language=en&overview=simplified&steps=true&access_token=pk.eyJ1IjoiaGFtYWRhYWEiLCJhIjoiY2wxcDlwenRmMTh1azNibzNheG5oeWc4ZSJ9.pvYNBp4Vgp0TiG51e6X8uw')
-                .then(response => response.json())
-                .then(data =>{
-                    //add coords to array
-                    coords{{rec.id}}=[...data.routes[0].geometry.coordinates];
-                });
-        
-                console.log(coords{{rec.id}});
-                map.on('load', () => {
-                    map.addSource('route{{rec.id}}', {
+                    // displaying the name of the recommendation on the map
+                    map.addLayer({
+                        'id': 'points',
+                        'type': 'symbol',
+                        'source': 'points',
+                        'layout': {
+                            // get the title name from the source's "title" property
+                            'text-field': ['get', 'title'],
+                            'text-font': [
+                                'Open Sans Semibold',
+                                'Arial Unicode MS Bold'
+                            ],
+                            'text-offset': [0, 0.25],
+                            'text-anchor': 'top'
+                        },
+                        "paint": {
+                            "text-color": "white",
+                            "text-halo-color": "#202124",
+                            "text-halo-width": 2
+                        }
+                    });
+                }
+            );
+        });
+
+        {% for rec in recommendations %}
+
+            // to store the set of coordinates (route) that lead to the recommendation's location
+            let coords{{rec.id}} = [];
+    
+            // marker for the recommendation
+            new mapboxgl.Marker().setLngLat(['{{rec.location.x}}', '{{rec.location.y}}']).addTo(map);
+
+            // fetching the coordinates (route) that lead to the recommendation's location
+            fetch('https://api.mapbox.com/directions/v5/mapbox/driving/{{long}}%2C{{lat}}%3B{{rec.location.x}}%2C{{rec.location.y}}?alternatives=true&geometries=geojson&language=en&overview=simplified&steps=true&access_token=pk.eyJ1IjoiaGFtYWRhYWEiLCJhIjoiY2wxcDlwenRmMTh1azNibzNheG5oeWc4ZSJ9.pvYNBp4Vgp0TiG51e6X8uw')
+            
+            .then(response => response.json())
+
+            .then(data =>{
+
+                //add coords to array
+                coords{{rec.id}}=[...data.routes[0].geometry.coordinates];
+            });
+    
+            {% comment %} console.log(coords{{rec.id}}); {% endcomment %}
+
+            // on map load display the route to the recommendation's location
+            map.on('load', () => {
+                map.addSource('route{{rec.id}}', {
                     'type': 'geojson',
                     'data': {
-                    'type': 'Feature',
-                    'properties': {},
-                    'geometry': {
-                    'type': 'LineString',
-                    'coordinates': coords{{rec.id}}
+                        'type': 'Feature',
+                        'properties': {},
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': coords{{rec.id}}
+                        }
                     }
-                    }
-                    });
-                    map.addLayer({
+                });
+                map.addLayer({
                     'id': 'route{{rec.id}}',
                     'type': 'line',
                     'source': 'route{{rec.id}}',
                     'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
+                        'line-join': 'round',
+                        'line-cap': 'round'
                     },
                     'paint': {
-                    'line-color': '#ffc0cb',
-                    'line-width': 8
+                        'line-color': '#ffc0cb',
+                        'line-width': 8
                     }
-                    });
-                    });
-            {% endfor %}
-            map.addControl(new mapboxgl.NavigationControl());
-            //add map controlers to the map 
-        
-        
-            </script>
-        {% endblock %}
+                });
+            });
+        {% endfor %}
+
+    //add map controlers to the map 
+    map.addControl(new mapboxgl.NavigationControl());
+
+
+    </script>
+{% endblock %}

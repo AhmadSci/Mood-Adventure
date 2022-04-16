@@ -13,5 +13,5 @@ class Recommendation(gis_models.Model):
     id = gis_models.BigAutoField(primary_key=True)
     description = models.CharField(max_length=500)
     location = gis_models.PointField()
-    link = models.CharField(max_length=500, blank=True)
+    link = models.CharField(max_length=5000, blank=True)
 
