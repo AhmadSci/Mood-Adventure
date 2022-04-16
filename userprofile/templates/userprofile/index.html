@@ -3,41 +3,57 @@
 {% block title %}{{user.username}}'s Profile{% endblock %}
 
 {% block body %}
-<div class="card m-5 location-div">
-    <div class="card-header">
-      Current Location
+<section style = "height: 80vh">
+    <div class="container py-5 h-100 ">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-xl-10">
+          <div class="card mb-5" style="border-radius: 15px;">
+            <div class="card-body p-4 shadow" style="border-radius: 15px;">
+              <h3 class="mb-3"><i class="ri-map-pin-user-line align-bottom"></i> Current Location</h3>
+              <p class="small mb-0"><i class="ri-close-circle-line align-bottom"></i> <span class="mx-2">|</span> <span id = 'longdis'>Longitude: <strong>{{long}}</strong></span></p>
+              <p class="small mb-0"><i class="ri-play-circle-line align-bottom"></i> <span class="mx-2">|</span> <span id = 'latdis'>Latitude: <strong>{{lat}}</strong></span></p>
+              <hr class="my-4">
+              <div class="d-flex justify-content-start align-items-center">
+                <form action= "" method="post">
+                    <input type="hidden" name="lat" id="lat" value="">
+                    <input type="hidden" name="long" id="long" value="">
+                    <a href="#!" id = "demo" class="btn btn-outline-primary btn-sm btn-floating" onclick="getLocation()">
+                        Get Location
+                    </a>
+                    <button type="submit" class="btn btn-outline-dark btn-sm btn-floating" id = "submit">
+                        Update Location
+                    </button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="card shadow mb-5" style="border-radius: 15px;">
+            <div class="card-body p-4">
+              <h3 class="mb-5">Previous Recommendations</h3>
+            {% if recommendations %}
+                {% for rec in recommendations %}
+                    <span >
+                        <h4 class=" mb-0 mt-3"><a class = "link" href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a> </h4>
+                        <div id = "parent{{rec.id}}" class="d-flex justify-content-start align-items-center" style = "justify-content: space-between !important">
+                            <p class="mt-3"><small class="text-muted">{{rec.distance.m|floatformat:"0"}}m away from you</small></p>
+                            
+                            <button type="button" name = {{rec.id}} id = "delbtn{{rec.id}}" class="btn btn-outline-dark btn-sm btn-floating float-right">
+                                Delete
+                            </button>
+                        </div>
+                        <hr class="my-4">
+                    </span>
+                {% endfor %}
+            {%else%}
+                <p class="text-center">No recommendations yet</p>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
-        <p class="card-text" id = 'longdis'>
-            Longitude: {{long}}<br>
-        </p>
-        <p class="card-text" id = "latdis">
-            Latitude: {{lat}}<br>
-        </p>
-        
-        <form action= "" method="post">
-            {%csrf_token%}
-            <a href = '#'id = "demo" class="btn btn-primary" onclick="getLocation()">Get Location</a>
-            <button type="submit" class="btn btn-primary" id = "submit">Update Location</button>
-            <input type="hidden" name="lat" id="lat" value="">
-            <input type="hidden" name="long" id="long" value="">
-        </form>
-    </div>
-  </div>
-  <div class="card m-3 location-div">
-    <div class="card-body">
-        <h5 class="card-title">Previous Recommendations</h5>
-        {% if recommendations %}
-            {% for rec in recommendations %}
-                <div class = "mt-2">
-                    <button type="button" class="btn btn-dark float-right" name = {{rec.id}} id = "delbtn{{rec.id}}">Delete</button>
-                    <p class="card-text"><a href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
-                    <p class="card-text"><small class="text-muted">{{rec.distance.m}}m away from you</small></p>
-                </div>
-            {% endfor %}
-        {% endif %}
-    </div>
-</div>
+  </section>
+
   <script>
 
     // getting all the elements needed
@@ -87,8 +103,8 @@
 
             // if the location is updated, show the new location on the page
             if (data.status === 'success'){
-                latdis.innerHTML = "Latitude: " + lat.value;
-                longdis.innerHTML = "Longitude: " + long.value;
+                latdis.innerHTML = "Latitude: <strong>" + lat.value+"</strong>";
+                longdis.innerHTML = "Longitude: <strong>" + long.value+"</strong>";
                 console.log('success :)');
             }
         });
@@ -128,7 +144,8 @@
                     if (data.status === 'success'){
                         // if the recommendation is deleted, remove the recommendation from the page
                         console.log('success :)');
-                        delbtn{{rec.id}}.parentNode.remove();
+                        //delbtn{{rec.id}}.parentNode.remove();
+                        document.getElementById("parent{{rec.id}}").parentNode.remove();
                     }
                 });
             });

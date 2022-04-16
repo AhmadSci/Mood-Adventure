@@ -75,7 +75,7 @@ def chormiuimsearch(url):
     response = Selector(page_content)
 
     # generating a random number to choose a random place to visit
-    num = random.randrange(3, 20, 2)
+    num = random.randrange(3, 9, 2)
     
     # getting the link and the name of the place
     for el in response.xpath(f'//*[@id="pane"]/div/div[1]/div/div/div[2]/div[1]/div[{num}]/div/a'):

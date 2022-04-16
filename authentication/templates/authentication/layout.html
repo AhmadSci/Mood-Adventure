@@ -53,7 +53,7 @@
                 {% endif %}
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <p class= 'text-capitalize nav-link'><a class = "btn btn-dark" href="{% url 'profile:index' %}"><i class="ri-user-line btn m-0" style = "color:white; padding:0 0 3px 0"></i>&nbsp<strong style = "padding-right:5px">{{ user.username }}</strong></a></p>
+                        <p class= 'text-capitalize nav-link'><a class = "btn btn-dark" href="{% url 'profile:index' %}"><i class="ri-user-line align-bottom" style = "color:white; padding-right:2px"></i>&nbsp<strong style = "padding-right:5px">{{ user.username }}</strong></a></p>
                     </li>
                 {% endif %}
               </ul>

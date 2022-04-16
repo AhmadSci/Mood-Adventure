@@ -3,52 +3,55 @@
 
 
 {% block body %}
-<div class="card m-5 location-div">
-    <div class="card-header">
-      Current Location
+<section style = "height: 60vh">
+    <div class="container py-5 h-100 ">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-xl-10">
+          <div class="card mb-5" style="border-radius: 15px;">
+            <div class="card-body p-4 shadow" style="border-radius: 15px;">
+              <h3 class="mb-3"><i class="ri-map-pin-user-line align-bottom"></i> Current Location</h3>
+              <p class="small mb-0"><i class="ri-close-circle-line align-bottom"></i><span class="mx-2">|</span> <span id = 'longdis'>Longitude: <strong>{{long}}</strong></span></p>
+              <p class="small mb-0"><i class="ri-play-circle-line align-bottom"></i><span class="mx-2">|</span> <span id = 'latdis'>Latitude: <strong>{{lat}}</strong></span></p>
+              {% if long == 0 %}
+              <hr>
+                <a href = "{% url 'profile:index' %}" class="btn btn-outline-danger btn-sm btn-floating" >Update Your Location</a>
+              {% endif %}
+            </div>
+          </div>
+          <div class="card shadow mb-5" style="border-radius: 15px;">
+            <div class="card-body p-4">
+              <h3 class="mb-3 "><i class="ri-treasure-map-line align-bottom"></i> Get Recommendation</h3>
+                <h5 class=" mb-0"><i class="ri-emotion-laugh-line align-bottom"></i> Mood</h5>
+                <div class="d-flex justify-content-start align-items-center">
+                    <form action= "" method="post" style = "width:100%">
+                        {%csrf_token%}
+                        <div class="list-group rounded card-body mt-0">
+                            <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Happy </button>
+                            <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Sad </button>
+                            <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Bored </button>
+                            <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Mad </button>
+                            <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Curious </button>
+                        </div>
+                    <p class="mt-3">Transportation</p>
+                    <div class="list-group rounded card-body mt-0">
+                        <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Walking</button>
+                        <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Car</button>
+                      </div>
+                    <div class = "d-flex justify-content-center">
+                    <button type="submit" id = "submitrec" class="btn btn-outline-primary btn-floating ">
+                        Get Recommendation
+                    </button>
+                    </div>
+                    </form>
+                </div>
+                <hr class="my-4">
+                <div class="mt-4" id="result" style = "width:100%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
-        <p class="card-text" id = 'longdis'>
-            Longitude: {{long}}<br>
-        </p>
-        <p class="card-text" id = "latdis">
-            Latitude: {{lat}}<br>
-        </p>
-        {%if long == 0 %}
-            <a href="{% url 'profile:index' %}" class="btn btn-primary">Set Location</a>
-        {%endif%}
-    </div>
-  </div>
-<div class="card mt-4 m-3 location-div">
-    <div class="card-header">
-      Get Recommendation
-    </div>
-    <div class="card-body mb-0">
-        <p class="card-text">
-            Mood
-        </p>
-        
-        <form action= "" method="post">
-            {%csrf_token%}
-            <div class="list-group rounded card-body mt-0">
-                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Happy </button>
-                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Sad </button>
-                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Bored </button>
-                <button type="button" class="list-group-item list-group-item-action border" data-toggle="list" role="tab">Mad </button>
-                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Curious </button>
-              </div>
-            <p class="card-text">
-                Transportation
-            </p>
-            <div class="list-group rounded card-body mt-0">
-                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Walking</button>
-                <button type="button" class="list-group-item list-group-item-action border rounded-0" data-toggle="list" role="tab">Car</button>
-              </div>
-            <button type="submit" class="btn btn-primary" id = "submitrec">Get Recommendation</button>
-        </form>
-    </div>
-  </div>
-  <div class="card mt-4 m-3 location-div" id="result"></div>
+  </section>
   <script>
     document.getElementById('submitrec').addEventListener("click", function(event){
         event.preventDefault();
@@ -90,22 +93,22 @@
                 console.log(data.url);
                 // create a div with the fetched data and append it to the div with id="result"
                 var div = document.createElement('div');
-                div.className = 'card-header';
-                div.innerHTML = 'Result';
+                div.className = 'card-body p-4';
+                var h3 = document.createElement('h3');
+                h3.className = 'mb-3';
+                h3.innerHTML = 'Result';
+                div.appendChild(h3);
                 document.getElementById('result').innerHTML = "";
                 document.getElementById('result').appendChild(div);
-                var div2 = document.createElement('div');
-                div2.className = 'card-body';
                 var h5 = document.createElement('h5');
                 h5.className = 'card-title';
                 h5.innerHTML = data.name;
                 var a = document.createElement('a');
-                a.className = 'btn btn-primary';
+                a.className = 'btn btn-outline-danger btn-sm btn-floating';
                 a.href = "{% url 'mapper:index' %}";
                 a.innerHTML = 'Go to map';
-                div2.appendChild(h5);
-                div2.appendChild(a);
-                document.getElementById('result').appendChild(div2);
+                div.appendChild(h5);
+                div.appendChild(a);
             });
         });
         });
