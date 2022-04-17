@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="card mt-5 location-div">
+    <div class="card mt-5 location-div shadow-lg">
 
         <div class="card-body">
 
@@ -29,6 +29,14 @@
         <div class="card-img-bottom" id="map" ><div>
 
     </div>
+
+    {% if recommendations %}
+            <img src="/media/mountainbg.png" alt="map" id = 'mountains'>
+            <img src="/media/tree5.png" alt="map" id = 'tree5' >
+        {% else %}
+            <img src="/media/mountainbg.png" alt="map" id = 'mountains'>
+            <img src="/media/tree2.png" alt="map" id = 'tree2'>
+        {%endif%}
 
     <script>
         // mapbox token

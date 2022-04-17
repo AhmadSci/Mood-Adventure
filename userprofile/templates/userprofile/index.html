@@ -54,6 +54,14 @@
     </div>
   </section>
 
+  {% if recommendations %}
+            <img src="/media/mountainbg.png" alt="map" id = 'mountains'>
+            <img src="/media/tree6.png" alt="map" id = 'tree6'>
+        {% else %}
+            <img src="/media/mountainbg.png" alt="map" id = 'mountains'>
+            <img src="/media/tree2.png" alt="map" id = 'tree2'>
+        {%endif%}
+
   <script>
 
     // getting all the elements needed

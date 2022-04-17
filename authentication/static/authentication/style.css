@@ -97,3 +97,61 @@ body { margin: 0; padding: 0; }
 .nav-item {
     align-self: baseline;
 }
+
+#mountains {
+    position: fixed;
+    right: 0;
+    z-index: -1; 
+    width:65rem;
+    bottom: -5rem;
+    transform:  translateX(10rem);
+}
+
+#tree1 {
+    position: fixed;
+    left: 0;
+    z-index: -1; 
+    width:35rem;
+    bottom: -1rem;
+    transform:  translateX(-2rem);
+
+}
+
+#tree6 {
+    position: fixed;
+    left: 0;
+    z-index: -1; 
+    width:30rem;
+    bottom: -1rem;
+    transform:  translateX(0rem);
+
+}
+
+#tree5 {
+    position: fixed;
+    left: 0;
+    z-index: -1; 
+    width:40rem;
+    bottom: -1rem;
+    transform:  translateX(-5rem);
+
+}
+
+#tree7 {
+    position: fixed;
+    left: 0;
+    z-index: -1; 
+    width:30rem;
+    bottom: -1rem;
+    transform:  translateX(-1rem);
+
+}
+
+#tree2 {
+    position: fixed;
+    left: 0;
+    z-index: -1; 
+    width:25rem;
+    bottom: -1rem;
+    transform:  translateX(0rem);
+}

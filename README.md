@@ -52,16 +52,16 @@ python manage.py runserver
 # Preview
 
 ## Home Page
-![Home Page](/imgs/HomePage.png)
+![Home Page](/media/HomePage.png)
 
 ## Recommendation Page
-![Recommendatin Page](/imgs/Recommendation_view.png)
+![Recommendatin Page](/media/Recommendation_view.png)
 
 ## Previous Recommendations Page
-![Recommendatin Page](/imgs/Previous_Recommendations.png)
+![Recommendatin Page](/media/Previous_Recommendations.png)
 
 ## Profile Page
-![Recommendatin Page](/imgs/Profile_Page.png)
+![Recommendatin Page](/media/Profile_Page.png)
 
 # Credits
 
