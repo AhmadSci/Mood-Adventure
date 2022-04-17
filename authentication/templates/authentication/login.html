@@ -11,11 +11,11 @@
             {{message}}
         </div>
     {%endif%}
-        <div class="col-xl-10">
-          <div class="card rounded-3 text-black">
-            <div class="row g-0">
-              <div class="col-lg-6">
-                <div class="card-body p-md-5 mx-md-4">
+        <div class="col-xl-10" >
+          <div class="card rounded-3 text-black shadow-lg" style="border-radius: 15px;">
+            <div class="row g-0 ">
+              <div class="col-lg-6 " >
+                <div class="card-body p-md-5 mx-md-4 " >
   
                   <div class="text-center">
                     <img src="{% static 'authentication/smol.png' %}"
@@ -51,12 +51,13 @@
                   </form>
   
                 </div>
-              </div>
-              <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
-                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                  <h2 class="mb-4">Mood Adventure</h2>
-                  <p class="small mb-0">A django web application made for Timathon.</p>
-                  <p class="small mb-0">Takes in your current mood and transportaion method, then uses selenium on the server side (very slow) to recommend a place for you to visit.</p>
+              </div> 
+              <div class="col-lg-6 d-flex align-items-center" id = "loginbg">
+                <div class="rounded" id = "loginbg1"></div>
+                <div class="text-white px-3 py-4 p-md-4 mx-md-4" id = "text">
+                  <h2 class="mb-4 text-dark">Mood Adventure</h2>
+                  <p class=" mb-0 text-dark">A django web application made for Timathon.</p>
+                  <p class=" mb-0 text-dark">Takes in your current mood and transportaion method, then uses selenium on the server side (very slow) to recommend a place for you to visit.</p>
                 </div>
               </div>
             </div>

@@ -119,7 +119,7 @@
             let coords{{rec.id}} = [];
     
             // marker for the recommendation
-            new mapboxgl.Marker().setLngLat(['{{rec.location.x}}', '{{rec.location.y}}']).addTo(map);
+            new mapboxgl.Marker({ "color": "#d16262" }).setLngLat(['{{rec.location.x}}', '{{rec.location.y}}']).addTo(map);
 
             // fetching the coordinates (route) that lead to the recommendation's location
             fetch('https://api.mapbox.com/directions/v5/mapbox/driving/{{long}}%2C{{lat}}%3B{{rec.location.x}}%2C{{rec.location.y}}?alternatives=true&geometries=geojson&language=en&overview=simplified&steps=true&access_token=pk.eyJ1IjoiaGFtYWRhYWEiLCJhIjoiY2wxcDlwenRmMTh1azNibzNheG5oeWc4ZSJ9.pvYNBp4Vgp0TiG51e6X8uw')
@@ -156,7 +156,7 @@
                         'line-cap': 'round'
                     },
                     'paint': {
-                        'line-color': '#ffc0cb',
+                        'line-color': '#17A2B8',
                         'line-width': 8
                     }
                 });
