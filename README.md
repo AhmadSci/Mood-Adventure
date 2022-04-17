@@ -1,4 +1,8 @@
 
+> i wanted to deploy the app on hroku to make you do less steps... but there is a problem with heroku and github authentication so i cant connect this repo to heroku, there is also a problem with `git push heroku main` so i can't do that either :)
+
+> i can't use any other deployment services either 
+
 # Mood-Adventure
 
 A Django Web application that recommends a mini adventure based on your current mood using GeoDjango.
