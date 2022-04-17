@@ -51,6 +51,12 @@ python manage.py runserver
 
 # Preview
 
+## Login Page
+![Home Page](/media/login.png)
+
+## Register Page
+![Home Page](/media/Register.png)
+
 ## Home Page
 ![Home Page](/media/HomePage.png)
 
