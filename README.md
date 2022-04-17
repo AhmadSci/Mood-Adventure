@@ -52,16 +52,16 @@ python manage.py runserver
 # Preview
 
 ## Home Page
-![Home Page](../Mood-Adventure/imgs/HomePage.png)
+![Home Page](/imgs/HomePage.png)
 
 ## Recommendation Page
-![Recommendatin Page](../Mood-Adventure/imgs/Recommendation_view.png)
+![Recommendatin Page](/imgs/Recommendation_view.png)
 
 ## Previous Recommendations Page
-![Recommendatin Page](../Mood-Adventure/imgs/Previous_Recommendations.png)
+![Recommendatin Page](/imgs/Previous_Recommendations.png)
 
 ## Profile Page
-![Recommendatin Page](../Mood-Adventure/imgs/Profile_Page.png)
+![Recommendatin Page](/imgs/Profile_Page.png)
 
 # Credits
 
