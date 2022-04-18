@@ -17,6 +17,7 @@ A Django Web application that recommends a mini adventure based on your current 
 - [x] User can get an adventure recommendation based on their mood and mode of transportation
 - [x] User can view all the recommendations they got in the `Previous Recommendations` Page
 - [x] User can delete any recommendation they didnt like from their `profile` page
+- [x] Clicking on a recommendation's name will open it's location on google maps
 - [x] A clean minimalistic user interface using Bootstrap
 
 # Installation

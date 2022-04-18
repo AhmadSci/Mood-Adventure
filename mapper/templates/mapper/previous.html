@@ -19,7 +19,7 @@
         {% if recommendations %}
             {% for rec in recommendations %}
                 <p class="card-text"><a class = "link" href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
-                <p class="card-text"><small class="text-muted">{{rec.distance.m}}m away from you</small></p>
+                <p class="card-text"><small class="text-muted">{{rec.distance.m|floatformat:"0"}}m away from you</small></p>
             {% endfor %}
         {% else %}
             <p class="card-text">No recommendations found</p>
