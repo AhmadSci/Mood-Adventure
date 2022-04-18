@@ -53,6 +53,24 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
+# Usage
+
+## After logging in you'll have to update your location
+
+1- Click on the red `Update your Location` Button <br>
+
+![HomeUpdate](/media/updateloc.png)
+
+2- You'll get redirected to your `Profile` page, click on `Get Location` button<br>
+
+![ProfilrUpdate](/media/getloc.png)
+
+3- Allow the broser to get your location, wait a few seconds, then click on the `Update Location` button <br>
+
+![ProfleUpdate](/media/updatelocc.png)
+
+> You're all set! Enjoy the app :)
+
 # Preview
 
 ## Login Page
