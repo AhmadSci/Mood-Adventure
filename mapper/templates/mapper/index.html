@@ -8,30 +8,32 @@
 {% endblock %}
 
 {% block body %}
-    <div class="card mt-5 location-div shadow-lg">
-        <div class="card-body">
-
-        <h5 class="card-title">Latest Recommendation</h5>
-
-        {% if recommendations %}
-            {% for rec in recommendations %}
-                <p class="card-text"><a class = "link" href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
-                <p class="card-text"><small class="text-muted">{{rec.distance.m|floatformat:"0"}}m away from you</small></p>
-            {% endfor %}
-        {% else %}
-            <p class="card-text">No recommendations found</p>
-        {% endif %}
+    <div class = "map-div">
+        <div class="card mt-5 location-div shadow-lg">
+            <div class="card-body">
+    
+            <h5 class="card-title">Latest Recommendation</h5>
+    
+            {% if recommendations %}
+                {% for rec in recommendations %}
+                    <p class="card-text"><a class = "link" href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
+                    <p class="card-text"><small class="text-muted">{{rec.distance.m|floatformat:"0"}}m away from you</small></p>
+                {% endfor %}
+            {% else %}
+                <p class="card-text">No recommendations found</p>
+            {% endif %}
+            </div>
+    
+            <div class="card-img-bottom" id="map" ><div>
+            {% if recommendations %}
+                <img src="/media/mountainbg.png" alt="map" id = 'mountains'>
+                <img src="/media/tree7.png" alt="map" id = 'tree7'>
+            {% else %}
+                <img src="/media/mountainbg.png" alt="map" id = 'mountains'>
+                <img src="/media/tree2.png" alt="map" id = 'tree2'>
+            {%endif%}
+    
         </div>
-
-        <div class="card-img-bottom" id="map" ><div>
-        {% if recommendations %}
-            <img src="/media/mountainbg.png" alt="map" id = 'mountains'>
-            <img src="/media/tree7.png" alt="map" id = 'tree7'>
-        {% else %}
-            <img src="/media/mountainbg.png" alt="map" id = 'mountains'>
-            <img src="/media/tree2.png" alt="map" id = 'tree2'>
-        {%endif%}
-
     </div>
 
     <script>

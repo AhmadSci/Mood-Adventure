@@ -10,24 +10,26 @@
 {% endblock %}
 
 {% block body %}
-    <div class="card mt-5 location-div shadow-lg">
+    <div class = "map-div">
+        <div class="card mt-5 location-div shadow-lg">
 
-        <div class="card-body">
+            <div class="card-body">
 
-        <h5 class="card-title">Previous Recommendations</h5>
+            <h5 class="card-title">Previous Recommendations</h5>
 
-        {% if recommendations %}
-            {% for rec in recommendations %}
-                <p class="card-text"><a class = "link" href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
-                <p class="card-text"><small class="text-muted">{{rec.distance.m|floatformat:"0"}}m away from you</small></p>
-            {% endfor %}
-        {% else %}
-            <p class="card-text">No recommendations found</p>
-        {% endif %}
+            {% if recommendations %}
+                {% for rec in recommendations %}
+                    <p class="card-text"><a class = "link" href = "{{rec.link}}" target = "_blank">{{ rec.description }}</a></p>
+                    <p class="card-text"><small class="text-muted">{{rec.distance.m|floatformat:"0"}}m away from you</small></p>
+                {% endfor %}
+            {% else %}
+                <p class="card-text">No recommendations found</p>
+            {% endif %}
+            </div>
+
+            <div class="card-img-bottom" id="map" ><div>
+
         </div>
-
-        <div class="card-img-bottom" id="map" ><div>
-
     </div>
 
     {% if recommendations %}
