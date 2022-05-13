@@ -85,7 +85,7 @@ def chormiuimsearch(url):
     # trying to get the lat and long of the place
     try:
         long = link[link.index("!3d")+len("123"):link.index("!4d")]
-        lat = link[link.index("!4d")+len("123"):link.index("?auth")]
+        lat = link[link.index("!4d")+len("123"):link.index("!16s")]
     except ValueError:
     # if the place is not found, then try again
         chormiuimsearch(url)
